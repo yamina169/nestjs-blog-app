@@ -8,6 +8,9 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { IUserResponse } from './types/userResponse.interface';
+import { IUser } from './types/user.types';
+import { LoginDto } from './dto/loginUser.dto';
 
 @ApiTags('users') // Groupe Swagger
 @Controller('users')
@@ -29,7 +32,18 @@ export class UserController {
     },
   })
   @UsePipes(new ValidationPipe())
-  async createUser(@Body('user') createUserDto: CreateUserDto): Promise<any> {
+  async createUser(
+    @Body('user') createUserDto: CreateUserDto,
+  ): Promise<IUserResponse> {
     return await this.userService.createUser(createUserDto);
+  }
+
+  @Post('login')
+  @UsePipes(new ValidationPipe())
+  async loginUser(
+    @Body('user') loginUserDto: LoginDto,
+  ): Promise<IUserResponse> {
+    const user = await this.userService.loginUser(loginUserDto);
+    return this.userService.generateUserResponse(user);
   }
 }
