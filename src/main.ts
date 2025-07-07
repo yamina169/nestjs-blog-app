@@ -9,12 +9,14 @@ async function bootstrap() {
   // Configuration Swagger
   const config = new DocumentBuilder()
     .setTitle('Blog API')
-    .setDescription('API for managing tags and more')
+    .setDescription(
+      'Blog API built with NestJS, supporting articles and user management.',
+    )
     .setVersion('1.0')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // documentation disponible sur /api
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);
 }
