@@ -63,6 +63,22 @@ export class UserService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+    delete user.password;
+
+    return user;
+  }
+  async findById(id: number): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!user) {
+      throw new HttpException(
+        `User with ID ${id} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     return user;
   }
@@ -78,6 +94,9 @@ export class UserService {
   }
 
   generateUserResponse(user: UserEntity): IUserResponse {
+    if (!user.id) {
+      throw new HttpException('user data is missing', HttpStatus.BAD_REQUEST);
+    }
     return {
       user: {
         ...user,
