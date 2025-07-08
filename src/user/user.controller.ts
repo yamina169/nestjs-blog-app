@@ -8,12 +8,14 @@ import {
   Get,
   UsePipes,
   ValidationPipe,
-  Req, // <-- Ajout ici
+  Req,
+  UseGuards, // <-- Ajout ici
 } from '@nestjs/common';
 import { Request } from 'express'; // <-- Import du type Request
 import { IUserResponse } from './types/userResponse.interface';
 import { LoginDto } from './dto/loginUser.dto';
 import { User } from './decorators/user.decorators';
+import { AuthGuard } from './guards/auth.guard';
 
 @Controller()
 export class UserController {
@@ -37,6 +39,7 @@ export class UserController {
   }
 
   @Get('user')
+  @UseGuards(AuthGuard)
   async getCurrentUser(
     @User() user,
     @User('id') userId,

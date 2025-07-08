@@ -94,9 +94,6 @@ export class UserService {
   }
 
   generateUserResponse(user: UserEntity): IUserResponse {
-    if (!user.id) {
-      throw new HttpException('user data is missing', HttpStatus.BAD_REQUEST);
-    }
     return {
       user: {
         ...user,
