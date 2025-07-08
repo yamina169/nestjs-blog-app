@@ -13,6 +13,7 @@ import {
 import { Request } from 'express'; // <-- Import du type Request
 import { IUserResponse } from './types/userResponse.interface';
 import { LoginDto } from './dto/loginUser.dto';
+import { User } from './decorators/user.decorators';
 
 @Controller()
 export class UserController {
@@ -36,8 +37,11 @@ export class UserController {
   }
 
   @Get('user')
-  async getCurrentUser(@Req() request: AuthRequest): Promise<IUserResponse> {
-    console.log(request.user);
-    return this.userService.generateUserResponse(request.user);
+  async getCurrentUser(
+    @User() user,
+    @User('id') userId,
+  ): Promise<IUserResponse> {
+    console.log('userId', userId);
+    return this.userService.generateUserResponse(user);
   }
 }
