@@ -4,8 +4,10 @@ import {
   Column,
   BeforeInsert,
   BeforeUpdate,
+  OneToMany,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { ArticleEntity } from '../article/article.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -26,6 +28,9 @@ export class UserEntity {
 
   @Column({})
   password?: string;
+
+  @OneToMany(() => ArticleEntity, (article) => article.author)
+  articles: ArticleEntity[];
 
   @BeforeInsert()
   @BeforeUpdate()
