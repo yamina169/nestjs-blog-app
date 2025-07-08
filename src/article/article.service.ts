@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IArticleResponse } from './types/articleResponse.interface';
-
+import slugify from 'slugify';
 @Injectable()
 export class ArticleService {
   constructor(
@@ -26,9 +26,15 @@ export class ArticleService {
       article.tagList = [];
     }
 
-    article.slug = 'slug-text';
+    article.slug = this.generateSlug(article.title);
     article.author = user;
+
     return await this.articleRepository.save(article);
+  }
+
+  generateSlug(title: string): string {
+    const id = Date.now().toString(36) + Math.random().toString(36).slice(2);
+    return `${slugify(title, { lower: true, strict: true })}-${id}`;
   }
 
   generateArticleResponse(article: ArticleEntity): IArticleResponse {
