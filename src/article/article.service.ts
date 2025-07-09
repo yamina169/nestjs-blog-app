@@ -4,7 +4,7 @@ import { CreateArticleDto } from './dto/createArticle.dto';
 import { UserEntity } from '../user/user.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 import { IArticleResponse } from './types/articleResponse.interface';
 import slugify from 'slugify';
 @Injectable()
@@ -33,18 +33,44 @@ export class ArticleService {
   }
 
   async getSingleArticle(slug: string): Promise<ArticleEntity> {
+    const article = await this.findBySlug(slug);
+
+    return article; // Type 'ArticleEntity | null' is not assignable to type 'ArticleEntity'.
+  }
+
+  async deleteArticle(
+    slug: string,
+    currentUserId: number,
+  ): Promise<{ message: string }> {
+    const article = await this.findBySlug(slug);
+
+    if (article.author.id !== currentUserId) {
+      throw new HttpException(
+        'You are not an author. What the hell are you going to delete?',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    await this.articleRepository.delete({ slug });
+
+    return {
+      message: 'Article deleted successfully',
+    };
+  }
+
+  async findBySlug(slug: string): Promise<ArticleEntity> {
     const article = await this.articleRepository.findOne({
       where: {
         slug,
       },
     });
-
     if (!article) {
-      throw new HttpException('aarticle is not found', HttpStatus.NOT_FOUND);
-    } // Invalid character.
+      throw new HttpException('Article is not found', HttpStatus.NOT_FOUND);
+    }
 
-    return article; // Type 'ArticleEntity | null' is not assignable to type 'ArticleEntity'.
+    return article;
   }
+
   generateSlug(title: string): string {
     const id = Date.now().toString(36) + Math.random().toString(36).slice(2);
     return `${slugify(title, { lower: true, strict: true })}-${id}`;

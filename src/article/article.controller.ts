@@ -9,6 +9,7 @@ import {
   ValidationPipe,
   Get,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/createArticle.dto';
@@ -37,5 +38,14 @@ export class ArticleController {
   async getArticle(@Param('slug') slug: string): Promise<IArticleResponse> {
     const article = await this.articleService.getSingleArticle(slug);
     return this.articleService.generateArticleResponse(article);
+  }
+
+  @Delete(':slug')
+  @UseGuards(AuthGuard)
+  async deleteArticle(
+    @Param('slug') slug: string,
+    @User('id') currentUserId: number,
+  ) {
+    return await this.articleService.deleteArticle(slug, currentUserId);
   }
 }
