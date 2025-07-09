@@ -7,6 +7,8 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
+  Get,
+  Param,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/createArticle.dto';
@@ -30,5 +32,10 @@ export class ArticleController {
       createArticleDto,
     );
     return this.articleService.generateArticleResponse(newArticle);
+  }
+  @Get(':slug')
+  async getArticle(@Param('slug') slug: string): Promise<IArticleResponse> {
+    const article = await this.articleService.getSingleArticle(slug);
+    return this.articleService.generateArticleResponse(article);
   }
 }
