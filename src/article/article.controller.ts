@@ -10,13 +10,14 @@ import {
   Get,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/createArticle.dto';
 import { ArticleEntity } from './article.entity';
 import { AuthGuard } from '@/user/guards/auth.guard';
 import { IArticleResponse } from './types/articleResponse.interface';
-
+import { UpdateArticleDto } from './dto/updateArticle.dto';
 @Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
@@ -47,5 +48,20 @@ export class ArticleController {
     @User('id') currentUserId: number,
   ) {
     return await this.articleService.deleteArticle(slug, currentUserId);
+  }
+
+  @Put(':slug')
+  @UseGuards(AuthGuard)
+  async updateArticle(
+    @Param('slug') slug: string,
+    @User('id') currentUserId: number,
+    @Body('article') updateArticleDto: UpdateArticleDto,
+  ): Promise<IArticleResponse> {
+    const updatedArticle = await this.articleService.updateArticle(
+      slug,
+      currentUserId,
+      updateArticleDto,
+    );
+    return this.articleService.generateArticleResponse(updatedArticle);
   }
 }

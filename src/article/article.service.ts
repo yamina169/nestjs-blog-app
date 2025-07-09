@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 import { IArticleResponse } from './types/articleResponse.interface';
 import slugify from 'slugify';
+import { UpdateArticleDto } from './dto/updateArticle.dto';
 @Injectable()
 export class ArticleService {
   constructor(
@@ -56,6 +57,29 @@ export class ArticleService {
     return {
       message: 'Article deleted successfully',
     };
+  }
+
+  async updateArticle(
+    slug: string,
+    currentUserId: number,
+    updateArticleDto: UpdateArticleDto,
+  ): Promise<ArticleEntity> {
+    const article = await this.findBySlug(slug);
+
+    if (article.author.id !== currentUserId) {
+      throw new HttpException(
+        'You are not an author. What the hell are you going to update?',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    if (updateArticleDto.title) {
+      article.slug = this.generateSlug(updateArticleDto.title);
+    }
+
+    Object.assign(article, updateArticleDto);
+
+    return await this.articleRepository.save(article);
   }
 
   async findBySlug(slug: string): Promise<ArticleEntity> {
