@@ -75,4 +75,13 @@ export class ArticleController {
     // ← ici Promise<IArticlesResponse>, PAS IArticlesResponse[]
     return this.articleService.findAll(query);
   }
+
+  @Post(':slug/favorite')
+  @UseGuards(AuthGuard)
+  async addToFavoriteArticle(
+    @User('id') currentUserId: number,
+    @Param('slug') slug: string,
+  ): Promise<IArticleResponse> {
+    return await this.articleService.addToFavoriteArticle(currentUserId, slug);
+  }
 }

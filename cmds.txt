@@ -1,0 +1,3 @@
+psql -U dev -d blog
+\pset pager off
+\dt
