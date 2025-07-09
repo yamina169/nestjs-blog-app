@@ -71,9 +71,12 @@ export class ArticleController {
 
   // Mauvais (Promise<IArticlesResponse[]> demande un tableau d’objets)
   @Get()
-  async findAll(@Query() query: any): Promise<IArticlesResponse> {
+  async findAll(
+    @User('id') currentUserId: number,
+    @Query() query: any,
+  ): Promise<IArticlesResponse> {
     // ← ici Promise<IArticlesResponse>, PAS IArticlesResponse[]
-    return this.articleService.findAll(query);
+    return this.articleService.findAll(currentUserId, query);
   }
 
   @Post(':slug/favorite')
