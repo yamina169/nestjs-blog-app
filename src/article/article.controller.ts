@@ -11,6 +11,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/createArticle.dto';
@@ -18,6 +19,7 @@ import { ArticleEntity } from './article.entity';
 import { AuthGuard } from '@/user/guards/auth.guard';
 import { IArticleResponse } from './types/articleResponse.interface';
 import { UpdateArticleDto } from './dto/updateArticle.dto';
+import { IArticlesResponse } from './types/articlesResponse.interface';
 @Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
@@ -63,5 +65,14 @@ export class ArticleController {
       updateArticleDto,
     );
     return this.articleService.generateArticleResponse(updatedArticle);
+  }
+
+  // articles.controller.ts
+
+  // Mauvais (Promise<IArticlesResponse[]> demande un tableau d’objets)
+  @Get()
+  async findAll(@Query() query: any): Promise<IArticlesResponse> {
+    // ← ici Promise<IArticlesResponse>, PAS IArticlesResponse[]
+    return this.articleService.findAll(query);
   }
 }
