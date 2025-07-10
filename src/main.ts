@@ -1,18 +1,26 @@
+// src/main.ts (or wherever you setup Swagger)
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Configuration Swagger
   const config = new DocumentBuilder()
     .setTitle('Blog API')
-    .setDescription(
-      'Blog API built with NestJS, supporting articles and user management.',
-    )
+    .setDescription('NestJS Blog API with Swagger')
     .setVersion('1.0')
+    .addBearerAuth(
+      // This enables the token input field in Swagger UI
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        in: 'header',
+      },
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
