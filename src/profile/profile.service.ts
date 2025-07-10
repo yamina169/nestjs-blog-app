@@ -29,10 +29,28 @@ export class ProfileService {
       throw new HttpException('Profile not found', HttpStatus.NOT_FOUND);
     }
 
-    return { ...profile, following: false };
+    let isFollowed = false;
+
+    if (currentUserId) {
+      const follow = await this.followRepository.findOne({
+        where: {
+          followerId: currentUserId,
+          followingId: profile.id,
+        },
+      });
+
+      isFollowed = Boolean(follow);
+    }
+
+    // à partir d’ici tu peux utiliser isFollowed…
+
+    return { ...profile, following: isFollowed };
   }
 
-  async followProfile(currentUserId: number, followingUsername: string) {
+  async followProfile(
+    currentUserId: number,
+    followingUsername: string,
+  ): Promise<ProfileType> {
     const followingProfile = await this.userRepository.findOne({
       where: {
         username: followingUsername,
@@ -66,6 +84,25 @@ export class ProfileService {
     return { ...followingProfile, following: true };
   }
 
+  async unfoldowProfile(
+    currentUserId: number,
+    followingUsername: string,
+  ): Promise<ProfileType> {
+    const followingProfile = await this.userRepository.findOne({
+      where: {
+        username: followingUsername,
+      },
+    });
+    if (!followingProfile) {
+      throw new HttpException('Profile does not exist', HttpStatus.NOT_FOUND);
+    }
+
+    await this.followRepository.delete({
+      followerId: currentUserId,
+      followingId: followingProfile.id,
+    });
+    return { ...followingProfile, following: false };
+  }
   generateProfileResponse(profile: ProfileType): IProfileResponse {
     delete profile?.password;
     delete profile?.email;
