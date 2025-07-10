@@ -1,62 +1,80 @@
 # Blog API
 
----
-
-## Overview
-
-This is a RESTful Blog API built with NestJS and documented using Swagger. It allows users to register, authenticate, manage profiles, create and manage articles, and interact with tags.
+Welcome to the **Blog API**, a RESTful service built with NestJS and fully documented using Swagger. This API enables user registration, authentication, profile management, article publishing, tag interaction, and social features like following and favoriting.
 
 ---
 
-## Features
+## 🚀 Features
 
 - User registration and login
-- User profile management
-- Article CRUD (Create, Read, Update, Delete)
+- Article CRUD (Create, Update, Delete)
 - Tag retrieval
-- Follow/unfollow users
+- Follow/unfollownand get user profile
 - Favorite/unfavorite articles
 - Feed of articles from followed users
 
 ---
 
-## Authorization
+## 🔐 Authorization
 
-Most endpoints require authorization via a JWT token, passed in the `Authorization` header as `Bearer <token>`.
+Protected endpoints require a valid JWT token in the `Authorization` header:
 
 ---
 
-## Environment Variables
+## ⚙️ Environment Variables
 
-Create a `.env` file in the project root with the following content:
+Create a `.env` file in the root directory with these variables:
 
 ```env
 JWT_SECRET=your_jwt_secret_key_here
----
-
-## Documentation
-
-The API documentation is available through Swagger UI at the path:
 
 ```
 
-/api
-
-```
-
-This provides interactive testing and detailed information on all endpoints, request parameters, and response schemas.
+> **Note:** Adjust database variables to match your setup.
 
 ---
 
-## Getting Started
+## 📖 Documentation
 
-1. Clone the repository
-2. Install dependencies with `npm install`
-3. Configure environment variables for database and JWT secrets
-4. Run the app with `npm run start`
-5. Open your browser and visit `http://localhost/api` to explore the API via Swagger UI
+Swagger UI is available at:
+
+```
+http://localhost:3000/api
+```
+
+Use it to explore endpoints, try requests, and inspect response schemas interactively.
 
 ---
 
-If you want me to add usage examples, setup instructions, or anything else, just say!
-```
+## 🏁 Getting Started
+
+1. **Clone repository**
+
+   ```bash
+   git clone <repository-url>
+   cd <repository-folder>
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment**
+   - Create your `.env` as shown above
+
+4. **Launch the server**
+
+   ```bash
+   npm run start:dev
+   ```
+
+5. **Open Swagger UI**
+   Navigate to:
+
+   ```
+   http://localhost:3000/api
+   ```
+
+---
